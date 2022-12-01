@@ -10,7 +10,11 @@
 
 using namespace std;
 
-bool parseChain();
+
+void CreateValidCert();
+void SignCert();
+void AddValidCert(string choice);
+bool parseChain(string decision);
 string getIssuer(string filename);
 bool checkCertList(string hash);
 bool cert_validation(string filename);
@@ -26,68 +30,106 @@ void appendfile(string filename, string str);
 bool checkCRL(string filename);
 bool checkChain(string filename);
 
-int drive() {
-
-  string decision;
-  bool validation = true;
-  int timeValidation = 3;
-  string filename;
-  //cout << "Enter the file name you would like to use: ";
-  //cin >> filename;
-  cout << "Type 1 to Sign a Certificate Sign Request\nType 2 to parse a chain of certs.\nType 3 to add a valid Cert.\n\nInput: ";
-  cin >> decision;
-  cout << endl << endl;
-
-  if (decision == "1") { // sign the selected Cert
-
-    string signer1 = signer();
-    string recipient1 = recipient();
-
-    string hashed = hashCert(signer1);
-    int hashInt = ASCIIfunc(hashed);
-    int Signature = RSA(hashInt, 1);
+//****************************************************************************
 
 
-    string sig = to_string(Signature);
 
-    appendfile(recipient1, sig);
+//****************************************************************************
 
+void CreateValidCert() {
 
-  } else if (decision == "2") { // Parse Cert Chain
-    cout << "Subject 1\n";
-    bool subject1 = parseChain();
-    cout << subject1 << endl << endl;
-    cout << "Subject 2\n";
-    bool subject2 = parseChain();
-    cout << subject2 << endl << endl;
+  string version;
+  string serialNumber;
+  string encryptionType;
+  string issuer;
+  string startDate;
+  string endDate;
+  string subject;
+  string publicKey;
+  string trustLevel;
 
+  cout << "Enter the version: ";
+  cin >> version;
+  cout << "Enter the serial number: ";
+  cin >> serialNumber;
+  cout << "Enter the type of Encryption: ";
+  cin >> encryptionType;
+  cout << "Enter the name of the issuer: ";
+  cin >> issuer;
+  cout << "Enter the start date: ";
+  cin >> startDate;
+  cout << "Enter the end date: ";
+  cin >> endDate;
+  cout << "Enter the name of the subject: ";
+  cin >> subject;
+  cout << "Enter the Public Key: ";
+  cin >> publicKey;
+  cout << "Enter the trust level digit: ";
+  cin >> trustLevel;
 
-  }else if (decision == "3") { // Add a valid hash
+  string filename = subject + ".txt";
+  ofstream outfile (filename);
+  outfile.close();
 
-    string choice;
-    cout << "What file would you like to hash?\nInput: ";
-    cin >> choice;
-    string hashed2 = hashCert(choice);
-    int hashInt2 = ASCIIfunc(hashed2);
-    int Signature = RSA(hashInt2, 1);
+  appendfile(subject, version);
+  appendfile(subject, serialNumber);
+  appendfile(subject, encryptionType);
+  appendfile(subject, issuer);
+  appendfile(subject, startDate);
+  appendfile(subject, endDate);
+  appendfile(subject, subject);
+  appendfile(subject, publicKey);
+  appendfile(subject, trustLevel);
 
-    string sig2 = to_string(Signature);
+  AddValidCert(subject);
 
-    appendfile("hash_list", sig2);
-
-  } else {}
-
-  return 0;
+  return;
 }
 
 //****************************************************************************
 
-bool parseChain() {
+void SignCert() {
+
+  string signer1 = signer();
+  string recipient1 = recipient();
+
+  string hashed = hashCert(signer1);
+  int hashInt = ASCIIfunc(hashed);
+  int Signature = RSA(hashInt, 1);
+
+  string sig = to_string(Signature);
+
+  appendfile(recipient1, sig);
+
+  return;
+}
+
+//****************************************************************************
+
+void AddValidCert(string choice) {
+
+  //string choice;
+  //cout << "What file would you like to hash?\nInput: ";
+  //cin >> choice;
+  string hashed2 = hashCert(choice);
+  int hashInt2 = ASCIIfunc(hashed2);
+  int Signature = RSA(hashInt2, 1);
+
+  string sig2 = to_string(Signature);
+
+  appendfile("hash_list", sig2);
+
+  return;
+}
+
+//****************************************************************************
+
+bool parseChain(string decision) {
   string arr[6];
   int count = 1;
-  string decision;
-  cout << "User (All Lowercase): ";
-  cin >> decision;
+  //string decision;
+  //cout << "User (All Lowercase): ";
+  //cin >> decision;
   string file = decision;
   arr[0] = file;
   cout << endl;
@@ -136,7 +178,7 @@ string getIssuer(string filename) {
   string y;
   readfile.open(filename);
   if (!readfile) {
-    cerr << "Cert Does Not Exist.";
+    cerr << "Cert Does Not Exist.\n";
     exit(1);
   }
   while (readfile >> y) {
