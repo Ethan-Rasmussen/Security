@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "certificates.cpp"
+#include "client_rsa.cpp"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ int main() {
   cout << "Hello User, Welcome to Project 4.\n";
       string choice;
 
-  do {
+//  do {
     cout << "\nType 1 to Create and Sign a Cert.\n" <<
             "Type 2 to Parse the Tree.\n" <<
             "Type 3 to communicate between two nodes.\n" <<
@@ -39,9 +40,9 @@ int main() {
     } else if (choice == "3") { // Communicate between the Nodes****************
       string user1;
       string user2;
-      cout << "Which nodes would like to communicate?\nUser 1: ";
+      cout << "Which nodes would like to communicate?\nClient: ";
       cin >> user1;
-      cout << "User 2: ";
+      cout << "Server: ";
       cin >> user2;
       cout << endl;
 
@@ -51,7 +52,8 @@ int main() {
 
       if (Vuser1 == true && Vuser2 == true) // Continue if Users are Valid******
       {
-        cout << "Able to communicate;\n";
+        cout << "Able to communicate\n";
+        exchangeSecret();
       }
       else { // Terminate if Invalid********************************************
         cout << "At least one node is invalid...";
@@ -60,6 +62,6 @@ int main() {
     } else { cout << "Thank You....Goodbye...\n\n"; } //Exit********************
 
 
-  } while (choice == "1" || choice == "2" || choice == "3");
+//  } while (choice == "1" || choice == "2" || choice == "3");
   return 0;
 }
